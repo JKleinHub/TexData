@@ -14,6 +14,10 @@ int main()
 		{
 			cout << c->as<string>() << endl;
 		}
+
+		auto Scene = config["Scene"];
+		cout << "Overwrite: " << Scene["Files"].has("overwrite") << endl;
+
 	}
 	catch(std::exception& ex)
 	{

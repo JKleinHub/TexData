@@ -87,6 +87,16 @@ Node& Node::operator[](string name)
 		return *(it->get());
 }
 
+bool Node::has(string name)
+{
+	auto it = find_if(m_Children.begin(), m_Children.end(),
+		[&name](unique_ptr<Node>& c)
+	{
+		return c->m_Name == name;
+	});
+	return it!=m_Children.end();
+}
+
 vector<unique_ptr<Node>>::iterator Node::begin()
 {
 	return m_Children.begin();
@@ -96,6 +106,7 @@ vector<unique_ptr<Node>>::iterator Node::end()
 {
 	return m_Children.end();
 }
+
 
 
 Node LoadFile(string filename)
@@ -138,6 +149,8 @@ Node LoadFile(string filename)
 				{
 					name = boost::trim_copy_if(splittedLine[0], whitespaces);
 					value = boost::trim_copy_if(splittedLine[1], whitespaces);
+					if(value.empty())
+						throw Exception("empty value");
 				}
 				else
 				{

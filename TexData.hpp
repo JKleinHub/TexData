@@ -28,6 +28,9 @@ public:
 	/// searches for a child with the given name and returns it
 	Node& operator[] (std::string name);
 
+	/// checks, whether a child with the given name exists
+	bool has(std::string name);
+
 	std::vector<std::unique_ptr<Node>>::iterator begin();
 	std::vector<std::unique_ptr<Node>>::iterator end();
 
