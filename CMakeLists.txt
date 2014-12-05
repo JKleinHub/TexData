@@ -1,0 +1,9 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+PROJECT(TexdataFiles)
+
+# Dependencies
+FIND_PACKAGE(Boost REQUIRED)
+
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+ADD_EXECUTABLE(TexdataFiles main.cpp TexData.hpp TexData.cpp)

@@ -1,0 +1,23 @@
+
+
+Scene
+	Camera
+		Position		= 10 12 14
+		Focal Length	= 10.4
+		Model			= PMD SuperCam
+		New				= false
+	Objects
+		Table
+			Height = 4
+			Shininess = 0
+		Ball
+			Radius = 3
+  
+	Files
+		SaveTo = C:\LabData\Files.txd
+		overwrite
+		noWarnings
+ 
+	Dependencys
+		C:\Standard Resources\Ball
+		C:\Standard Resources\Table
