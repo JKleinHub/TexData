@@ -16,6 +16,9 @@ public:
 	Node(std::string name, std::string value, Node* parent, int lineNumber = -1);
 	Node(const Node& node);
 
+	std::string Name() { return m_Name; }
+	std::string Value() { return m_Value; }
+
 	/// returns the Node of the newly created Child
 	Node* AddChild(std::string name, std::string value, int lineNumber = -1);
 	Node* GetParent();

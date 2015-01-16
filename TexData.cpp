@@ -1,6 +1,7 @@
 #include "TexData.hpp"
 
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
@@ -107,7 +108,87 @@ vector<unique_ptr<Node>>::iterator Node::end()
 	return m_Children.end();
 }
 
+template<typename t_stream> Node Load(t_stream& stream)
+{
+	Node rootNode("root", "", nullptr);
+	Node* lastNode = nullptr;
+	Node* currentNode = &rootNode;
+	unsigned int lastIndentation = 0;
 
+	const auto whitespaces = boost::is_any_of(" \n\t\v\f\r");
+	const auto nameValueSeparator = "=";
+
+	// Parse files
+	auto lineCounter = 0u; //Line counter for Exceptions
+	for(string line; getline(stream, line);)
+	{
+		try
+		{
+			lineCounter++;
+
+			// check for empty lines
+			if(boost::trim_copy_if(line, whitespaces).empty())
+				continue;
+
+			// ------- split name = value -------
+			string name, value;
+			vector<string> splittedLine;
+			boost::split(splittedLine, line, boost::is_any_of(nameValueSeparator));
+			if(1 == splittedLine.size())
+			{
+				name = boost::trim_copy_if(splittedLine[0], whitespaces);
+			}
+			else if(2 == splittedLine.size())
+			{
+				name = boost::trim_copy_if(splittedLine[0], whitespaces);
+				value = boost::trim_copy_if(splittedLine[1], whitespaces);
+				if(value.empty())
+					throw Exception("empty value");
+			}
+			else
+			{
+				throw Exception(string("too many '")+nameValueSeparator+"'");
+			}
+
+			// ------- determine indentation -------
+			const auto indentationCharacter = '\t';
+			auto const contentStart = find_if_not(
+				line.begin(), line.end(),
+				[](const char c){ return c=='\t'; });
+			const unsigned int currentIndentation = std::distance(line.begin(), contentStart);
+
+
+			// ------- insert new element -------
+			if(currentIndentation == lastIndentation)
+			{
+				//no need to do anything
+			}
+			else if(currentIndentation == lastIndentation + 1)
+			{
+				currentNode = lastNode;
+			}
+			else if(currentIndentation < lastIndentation)
+			{
+				for(auto i = 0u; i< lastIndentation - currentIndentation; ++i)
+					currentNode = currentNode->GetParent();
+			}
+			else // new indentation is more than 2 bigger than old one
+			{
+				throw Exception("Indentation too deep");
+			}
+			lastNode = currentNode->AddChild(name, value, lineCounter);
+
+			lastIndentation = currentIndentation;
+		}
+		catch(Exception& e)
+		{
+			e.SetBadLine(std::to_string(lineCounter) + ": \"" + boost::trim_copy_if(line, whitespaces) + "\"");
+			throw;
+		}
+	}
+
+	return rootNode;
+}
 
 Node LoadFile(string filename)
 {
@@ -116,85 +197,7 @@ Node LoadFile(string filename)
 		ifstream file(filename);
 		if(!file.is_open())
 			throw Exception("File not found");
-
-		Node rootNode("root", "", nullptr);
-		Node* lastNode = nullptr;
-		Node* currentNode = &rootNode;
-		unsigned int lastIndentation = 0;
-
-		const auto whitespaces = boost::is_any_of(" \n\t\v\f\r");
-		const auto nameValueSeparator = "=";
-
-		// Parse files
-		auto lineCounter = 0u; //Line counter for Exceptions
-		for(string line; getline(file, line);)
-		{
-			try
-			{
-				lineCounter++;
-
-				// check for empty lines
-				if(boost::trim_copy_if(line, whitespaces).empty())
-					continue;
-
-				// ------- split name = value -------
-				string name, value;
-				vector<string> splittedLine;
-				boost::split(splittedLine, line, boost::is_any_of(nameValueSeparator));
-				if(1 == splittedLine.size())
-				{
-					name = boost::trim_copy_if(splittedLine[0], whitespaces);
-				}
-				else if(2 == splittedLine.size())
-				{
-					name = boost::trim_copy_if(splittedLine[0], whitespaces);
-					value = boost::trim_copy_if(splittedLine[1], whitespaces);
-					if(value.empty())
-						throw Exception("empty value");
-				}
-				else
-				{
-					throw Exception(string("too many '")+nameValueSeparator+"'");
-				}
-
-				// ------- determine indentation -------
-				const auto indentationCharacter = '\t';
-				auto const contentStart = find_if_not(
-					line.begin(), line.end(),
-					[](const char c){ return c=='\t'; });
-				const unsigned int currentIndentation = std::distance(line.begin(), contentStart);
-
-
-				// ------- insert new element -------
-				if(currentIndentation == lastIndentation)
-				{
-					//no need to do anything
-				}
-				else if(currentIndentation == lastIndentation + 1)
-				{
-					currentNode = lastNode;
-				}
-				else if(currentIndentation < lastIndentation)
-				{
-					for(auto i=0u; i< lastIndentation - currentIndentation; ++i)
-						currentNode = currentNode->GetParent();
-				}
-				else // new indentation is more than 2 bigger than old one
-				{
-					throw Exception("Indentation too deep");
-				}
-				lastNode = currentNode->AddChild(name, value, lineCounter);
-
-				lastIndentation = currentIndentation;
-			}
-			catch(Exception& e)
-			{
-				e.SetBadLine(std::to_string(lineCounter) + ": \"" + boost::trim_copy_if(line, whitespaces) + "\"");
-				throw;
-			}
-		}
-
-		return rootNode;
+		return Load(file);
 	}
 	catch(Exception& e)
 	{
@@ -203,6 +206,12 @@ Node LoadFile(string filename)
 	}
 }
 
+Node LoadString(std::string inputString)
+{
+	std::stringstream stream;
+	stream << inputString;
+	return Load(stream);
+}
 
 Exception::Exception(string errorSummary):
 m_Summary(errorSummary)
