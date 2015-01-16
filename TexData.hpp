@@ -40,10 +40,17 @@ public:
 	/// returns the value of this node casted to type t
 	template<typename t> t as()
 	{
-		if(m_Value.empty() && m_Children.empty())
-			return boost::lexical_cast<t>(m_Name);
-		else
-			return boost::lexical_cast<t>(m_Value);
+		try
+		{
+			if(m_Value.empty() && m_Children.empty())
+				return boost::lexical_cast<t>(m_Name);
+			else
+				return boost::lexical_cast<t>(m_Value);
+		}
+		catch(std::exception& ex)//TODO add more information to this exception...
+		{
+			throw Exception(ex.what());
+		}
 	}
 private:
 	/// returns a string describing the path to the root
