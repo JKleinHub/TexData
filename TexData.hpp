@@ -5,9 +5,13 @@
 #include <exception>
 #include <memory>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>// for Node::split
 
 namespace TexData
 {
+
+const auto whitespaces = boost::is_any_of(" \n\t\v\f\r");
+const auto nameValueSeparator = "=";
 
 class Node
 {
@@ -32,6 +36,10 @@ public:
 	Node& operator[] (std::string name);
 
 	/// checks, whether a child with the given name exists
+	/** This will only return the first child with the given name. If you have
+		multiple elements with the same name, use the iterator interface or
+		other operator[] and filter them yourself.
+	**/
 	bool has(std::string name);
 
 	std::vector<std::unique_ptr<Node>>::iterator begin();
@@ -51,6 +59,17 @@ public:
 		{
 			throw Exception(ex.what());
 		}
+	}
+
+	/// splits a line in a vector of primitives of the same type, all whitespaces between separators will be trimmed
+	template<typename t> std::vector<t> split(const char* split=",")
+	{
+		std::vector<std::string> splitted;
+		boost::split(splitted, m_Value, boost::is_any_of(split));
+		std::vector<t> result;
+		for(auto& s : splitted)
+			result.push_back(boost::lexical_cast<t>(boost::trim_copy_if(s, whitespaces)));
+		return result;
 	}
 private:
 	/// returns a string describing the path to the root

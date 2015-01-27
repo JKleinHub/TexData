@@ -115,9 +115,6 @@ template<typename t_stream> Node Load(t_stream& stream)
 	Node* currentNode = &rootNode;
 	unsigned int lastIndentation = 0;
 
-	const auto whitespaces = boost::is_any_of(" \n\t\v\f\r");
-	const auto nameValueSeparator = "=";
-
 	// Parse files
 	auto lineCounter = 0u; //Line counter for Exceptions
 	for(string line; getline(stream, line);)
