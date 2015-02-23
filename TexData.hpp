@@ -10,8 +10,15 @@
 namespace TexData
 {
 
-const auto whitespaces = boost::is_any_of(" \n\t\v\f\r");
-const auto nameValueSeparator = "=";
+	inline boost::algorithm::detail::is_any_ofF<char> whitespaces()
+	{
+		return boost::is_any_of(" \n\t\v\f\r");
+	}
+
+	inline std::string nameValueSeparator()
+	{
+		return "=";
+	}
 
 class Node
 {
@@ -68,7 +75,7 @@ public:
 		boost::split(splitted, m_Value, boost::is_any_of(split));
 		std::vector<t> result;
 		for(auto& s : splitted)
-			result.push_back(boost::lexical_cast<t>(boost::trim_copy_if(s, whitespaces)));
+			result.push_back(boost::lexical_cast<t>(boost::trim_copy_if(s, whitespaces())));
 		return result;
 	}
 private:

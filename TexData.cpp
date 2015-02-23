@@ -124,27 +124,27 @@ template<typename t_stream> Node Load(t_stream& stream)
 			lineCounter++;
 
 			// check for empty lines
-			if(boost::trim_copy_if(line, whitespaces).empty())
+			if(boost::trim_copy_if(line, whitespaces()).empty())
 				continue;
 
 			// ------- split name = value -------
 			string name, value;
 			vector<string> splittedLine;
-			boost::split(splittedLine, line, boost::is_any_of(nameValueSeparator));
+			boost::split(splittedLine, line, boost::is_any_of(nameValueSeparator()));
 			if(1 == splittedLine.size())
 			{
-				name = boost::trim_copy_if(splittedLine[0], whitespaces);
+				name = boost::trim_copy_if(splittedLine[0], whitespaces());
 			}
 			else if(2 == splittedLine.size())
 			{
-				name = boost::trim_copy_if(splittedLine[0], whitespaces);
-				value = boost::trim_copy_if(splittedLine[1], whitespaces);
+				name = boost::trim_copy_if(splittedLine[0], whitespaces());
+				value = boost::trim_copy_if(splittedLine[1], whitespaces());
 				if(value.empty())
 					throw Exception("empty value");
 			}
 			else
 			{
-				throw Exception(string("too many '")+nameValueSeparator+"'");
+				throw Exception(string("too many '")+nameValueSeparator()+"'");
 			}
 
 			// ------- determine indentation -------
@@ -179,7 +179,7 @@ template<typename t_stream> Node Load(t_stream& stream)
 		}
 		catch(Exception& e)
 		{
-			e.SetBadLine(std::to_string(lineCounter) + ": \"" + boost::trim_copy_if(line, whitespaces) + "\"");
+			e.SetBadLine(std::to_string(lineCounter) + ": \"" + boost::trim_copy_if(line, whitespaces()) + "\"");
 			throw;
 		}
 	}
