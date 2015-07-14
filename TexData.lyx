@@ -17,7 +17,7 @@
 \font_typewriter default
 \font_math auto
 \font_default_family default
-\use_non_tex_fonts false
+\use_non_tex_fonts true
 \font_sc false
 \font_osf false
 \font_sf_scale 100
@@ -93,8 +93,8 @@ Textdata Files
 We try to define a hierarchical, text based, multi purpose file format that
  can be easily written and read by both humans computers.
  It is intended for structured data and not suitable for big binary blobs
- like arrays or image files.
- (which wouldn't be human readable anyway).
+ like arrays or image files (which wouldn't be human readable anyway).
+ Furthermore it is hopefully very easy to understand and use.
 \end_layout
 
 \begin_layout Section
@@ -103,6 +103,7 @@ Example File:
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "tabsize=4"
 inline false
 status open
 
@@ -243,7 +244,11 @@ all Types that can be serialized into a single text line are allowed
 \end_layout
 
 \begin_layout Itemize
-Lines can consist of a name = value pair or just a value
+Lines can consist of a name 
+\family typewriter
+=
+\family default
+ value pair or just a value
 \end_layout
 
 \begin_layout Itemize
@@ -251,16 +256,33 @@ at each level, names must be unique
 \end_layout
 
 \begin_layout Itemize
-Elements that 
+Whitespaces at the beginning and end of each line and before and after the
+ 
+\family typewriter
+=
+\family default
+ are ignored
 \end_layout
 
 \begin_layout Section
-Parser:
+Usage
+\end_layout
+
+\begin_layout Standard
+Please see the main.cpp file as an example.
+ If anything is unclear just try reading the code, it is rather short and
+ should be not too hard to understand.
+\end_layout
+
+\begin_layout Section
+Implementation:
 \end_layout
 
 \begin_layout Standard
 To simplify the parser, it is completely build upon the standard library
  and boost.
+ The source code consists only of two rather short files which can be simply
+ added to your project.
 \end_layout
 
 \end_body
