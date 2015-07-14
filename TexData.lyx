@@ -124,6 +124,11 @@ Scene
 
 \begin_layout Plain Layout
 
+		# Focal Length essentially defines the Zoom
+\end_layout
+
+\begin_layout Plain Layout
+
 		FocalLength = 10.4
 \end_layout
 
@@ -256,12 +261,20 @@ at each level, names must be unique
 \end_layout
 
 \begin_layout Itemize
-Whitespaces at the beginning and end of each line and before and after the
- 
+white spaces at the beginning and end of each line and before and after
+ the 
 \family typewriter
 =
 \family default
  are ignored
+\end_layout
+
+\begin_layout Itemize
+lines starting with 
+\family typewriter
+#
+\family default
+ are ignored (comment lines)
 \end_layout
 
 \begin_layout Section

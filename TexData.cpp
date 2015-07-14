@@ -65,15 +65,15 @@ void Node::DebugPrint(unsigned int indentation)
 	}
 }
 
-Node& Node::operator[](unsigned int index)
+const Node& Node::operator[](unsigned int index) const
 {
 	return *(m_Children[index].get());
 }
 
-Node& Node::operator[](string name)
+const Node& Node::operator[](string name) const
 {
 	auto it = find_if(m_Children.begin(), m_Children.end(),
-		[&name](unique_ptr<Node>& c )
+		[&name](const unique_ptr<Node>& c )
 		{
 			return c->m_Name == name;
 		});
@@ -88,24 +88,24 @@ Node& Node::operator[](string name)
 		return *(it->get());
 }
 
-bool Node::has(string name)
+bool Node::has(string name) const
 {
 	auto it = find_if(m_Children.begin(), m_Children.end(),
-		[&name](unique_ptr<Node>& c)
+		[&name](const unique_ptr<Node>& c)
 	{
 		return c->m_Name == name;
 	});
 	return it!=m_Children.end();
 }
 
-vector<unique_ptr<Node>>::iterator Node::begin()
+vector<unique_ptr<Node>>::const_iterator Node::begin() const
 {
-	return m_Children.begin();
+	return m_Children.cbegin();
 }
 
-vector<unique_ptr<Node>>::iterator Node::end()
+vector<unique_ptr<Node>>::const_iterator Node::end() const
 {
-	return m_Children.end();
+	return m_Children.cend();
 }
 
 template<typename t_stream> Node Load(t_stream& stream)
@@ -116,15 +116,19 @@ template<typename t_stream> Node Load(t_stream& stream)
 	unsigned int lastIndentation = 0;
 
 	// Parse files
-	auto lineCounter = 0u; //Line counter for Exceptions
+	auto lineCounter = 0u; //Line counter for Debug Output (Exceptions)
 	for(string line; getline(stream, line);)
 	{
 		try
 		{
 			lineCounter++;
 
-			// check for empty lines
+			// skip for empty lines
 			if(boost::trim_copy_if(line, whitespaces()).empty())
+				continue;
+
+			// skip comment lines lines (Comments start with #)
+			if('#' == boost::trim_copy_if(line, whitespaces())[0])
 				continue;
 
 			// ------- split name = value -------

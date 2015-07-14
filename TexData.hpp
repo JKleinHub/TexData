@@ -27,8 +27,8 @@ public:
 	Node(std::string name, std::string value, Node* parent, int lineNumber = -1);
 	Node(const Node& node);
 
-	std::string Name() { return m_Name; }
-	std::string Value() { return m_Value; }
+	std::string Name() const { return m_Name; }
+	std::string Value() const { return m_Value; }
 
 	/// returns the Node of the newly created Child
 	Node* AddChild(std::string name, std::string value, int lineNumber = -1);
@@ -37,23 +37,23 @@ public:
 	void DebugPrint(unsigned int indentation = 0);
 
 	/// returns the i'th child of this Node
-	Node& operator[] (unsigned int index);
+	const Node& operator[] (unsigned int index) const;
 
 	/// searches for a child with the given name and returns it
-	Node& operator[] (std::string name);
+	const Node& operator[] (std::string name) const;
 
 	/// checks, whether a child with the given name exists
 	/** This will only return the first child with the given name. If you have
 		multiple elements with the same name, use the iterator interface or
 		other operator[] and filter them yourself.
 	**/
-	bool has(std::string name);
+	bool has(std::string name) const;
 
-	std::vector<std::unique_ptr<Node>>::iterator begin();
-	std::vector<std::unique_ptr<Node>>::iterator end();
+	std::vector<std::unique_ptr<Node>>::const_iterator begin() const;
+	std::vector<std::unique_ptr<Node>>::const_iterator end() const;
 
 	/// returns the value of this node casted to type t
-	template<typename t> t as()
+	template<typename t> t as() const
 	{
 		try
 		{
