@@ -86,7 +86,7 @@
 \begin_body
 
 \begin_layout Title
-Textdata Files
+TexData Files
 \end_layout
 
 \begin_layout Abstract
@@ -232,7 +232,7 @@ only Tabs are allowed for indentation
 \end_layout
 
 \begin_layout Itemize
-each level has exactly one more Tab than the previous one
+each level has exactly one more tabulator than the previous one
 \end_layout
 
 \begin_layout Itemize
