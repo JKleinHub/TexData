@@ -32,9 +32,9 @@ public:
 
 	/// returns the Node of the newly created Child
 	Node* AddChild(std::string name, std::string value, int lineNumber = -1);
-	Node* GetParent();
+	Node* GetParent() const;
 
-	void DebugPrint(unsigned int indentation = 0);
+	void DebugPrint(unsigned int indentation = 0) const;
 
 	/// returns the i'th child of this Node
 	const Node& operator[] (unsigned int index) const;
@@ -69,7 +69,7 @@ public:
 	}
 
 	/// splits a line in a vector of primitives of the same type, all whitespaces between separators will be trimmed
-	template<typename t> std::vector<t> split(const char* split=",")
+	template<typename t> std::vector<t> split(const char* split=",") const
 	{
 		std::vector<std::string> splitted;
 		boost::split(splitted, m_Value, boost::is_any_of(split));

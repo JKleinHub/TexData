@@ -47,12 +47,12 @@ Node* Node::AddChild(string name, string value, int lineNumber)
 	return m_Children.rbegin()->get(); // and return its pointer
 }
 
-Node* Node::GetParent()
+Node* Node::GetParent() const
 {
 	return m_Parent;
 }
 
-void Node::DebugPrint(unsigned int indentation)
+void Node::DebugPrint(unsigned int indentation) const
 {
 	for(auto i = 0u; i<indentation; ++i)
 		cout << "  ";
@@ -155,7 +155,7 @@ template<typename t_stream> Node Load(t_stream& stream)
 			const auto indentationCharacter = '\t';
 			auto const contentStart = find_if_not(
 				line.begin(), line.end(),
-				[](const char c){ return c=='\t'; });
+				[indentationCharacter](const char c){ return c==indentationCharacter; });
 			const unsigned int currentIndentation = std::distance(line.begin(), contentStart);
 
 
